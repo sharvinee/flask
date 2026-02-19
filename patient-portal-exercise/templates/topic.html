@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ topic|capitalize }}</h2>
+
+  {% if points %}
+    <ol>
+      {% for p in points %}
+        <li>{{ p }}</li>
+      {% endfor %}
+    </ol>
+  {% else %}
+    <p class="warn">Unknown topic. Try one from the home page.</p>
+  {% endif %}
+{% endblock %}
+``

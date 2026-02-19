@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Choose a topic</h2>
+  <ul>
+    {% for t in topics %}
+      <li><a href="{{ url_for('topic', topic_name=t) }}">{{ t|capitalize }}</a></li>
+    {% endfor %}
+  </ul>
+
+  <h2>Risk Info (Demo)</h2>
+  <form action="{{ url_for('risk') }}" method="get">
+    <label for="age">Age:</label>
+    <input id="age" name="age" type="number" min="0" />
+    <button type="submit">View</button>
+  </form>
+{% endblock %}
+``

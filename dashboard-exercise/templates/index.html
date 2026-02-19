@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <title>Triage Dashboard</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 24px; }
+      table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+      th, td { border: 1px solid #ddd; padding: 8px; }
+      th { background: #f4f4f4; }
+      .RED { background: #ffdddd; }
+      .YELLOW { background: #fff6cc; }
+      .GREEN { background: #ddffdd; }
+      .row-actions { white-space: nowrap; }
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .card { border: 1px solid #ddd; padding: 12px; border-radius: 8px; }
+      .small { color: #555; font-size: 0.9em; }
+      input { padding: 6px; width: 100%; }
+      button { padding: 8px 12px; cursor: pointer; }
+      .btn { border: 1px solid #999; background: #fafafa; }
+      .btn-danger { border: 1px solid #a33; background: #ffecec; }
+      label { display:block; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>ED Triage Dashboard</h1>
+    <p class='small'>Prototype: in-memory queue. <b>Reset</b> restores the initial data.</p>
+
+    <div class='grid'>
+      <div class='card'>
+        <h3>Queue Summary</h3>
+        <p><b>RED:</b> {{ summary['RED'] }} &nbsp; | &nbsp; <b>YELLOW:</b> {{ summary['YELLOW'] }} &nbsp; | &nbsp; <b>GREEN:</b> {{ summary['GREEN'] }}</p>
+        <p><b>Next up:</b> {{ next_id if next_id else 'None (empty queue)' }}</p>
+        <form method='post' action='{{ url_for('reset') }}'>
+          <button class='btn' type='submit'>Reset</button>
+        </form>
+      </div>
+
+      <div class='card'>
+        <h3>Add New Arrival</h3>
+        <form method='post' action='{{ url_for('add_patient') }}'>
+          <label>Encounter ID</label>
+          <input name='id' placeholder='E007' required />
+
+          <label>Age</label>
+          <input name='age' type='number' min='0' required />
+
+          <label>Heart rate (hr)</label>
+          <input name='hr' type='number' min='0' required />
+
+          <label>Systolic BP (sbp)</label>
+          <input name='sbp' type='number' min='0' required />
+
+          <label>Chief complaint</label>
+          <input name='chief_complaint' placeholder='e.g., chest pain' required />
+
+          <label>Arrival minutes ago</label>
+          <input name='arrival_min' type='number' min='0' required />
+
+          <p style='margin-top: 10px;'>
+            <button class='btn' type='submit'>Add Patient</button>
+          </p>
+        </form>
+      </div>
+    </div>
+
+    <h2>Current Queue</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Age</th>
+          <th>HR</th>
+          <th>SBP</th>
+          <th>Chief Complaint</th>
+          <th>Arrival (min)</th>
+          <th>Score</th>
+          <th>Priority</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in encounters %}
+        <tr class='{{ e['priority'] }}'>
+          <td>{{ e['id'] }}</td>
+          <td>{{ e['age'] }}</td>
+          <td>{{ e['hr'] }}</td>
+          <td>{{ e['sbp'] }}</td>
+          <td>{{ e['chief_complaint'] }}</td>
+          <td>{{ e['arrival_min'] }}</td>
+          <td>{{ e['score'] }}</td>
+          <td><b>{{ e['priority'] }}</b></td>
+          <td class='row-actions'>
+            <form method='post' action='{{ url_for('roomed', enc_id=e['id']) }}' style='display:inline;'>
+              <button class='btn-danger' type='submit'>Roomed (Remove)</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </body>
+</html>

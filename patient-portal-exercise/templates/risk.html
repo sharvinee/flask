@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Risk Info (Demo)</h2>
+  <p><strong>Age:</strong> {{ age if age is not none else "Not provided" }}</p>
+  <p><strong>Bucket:</strong> {{ bucket }}</p>
+  <div class="card">{{ message }}</div>
+{% endblock %}
