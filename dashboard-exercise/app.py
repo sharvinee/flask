@@ -88,12 +88,13 @@ def dashboard():
 @app.post('/roomed/<enc_id>')
 def roomed(enc_id):
     global queue
-
     # TODO (STUDENT): Remove the encounter with id == enc_id
     # Hint: list comprehension
-    
+    for e in queue:
+        if e['id'] == enc_id:
+            queue.remove(e)
+            break
     return redirect(url_for('dashboard'))
-
 
 @app.post('/add')
 def add_patient():
@@ -102,10 +103,15 @@ def add_patient():
     # TODO (STUDENT): Build a new encounter dict from request.form
     # Required fields: id, age, hr, sbp, chief_complaint, arrival_min
     # Remember: request.form values are strings.
-
-
-    # TODO (STUDENT): Append to queue
-    
+    new_encounter = {
+        'id': request.form['id'],
+        'age': int(request.form['age']),
+        'hr': int(request.form['hr']),
+        'sbp': int(request.form['sbp']),
+        'chief_complaint': request.form['chief_complaint'],
+        'arrival_min': int(request.form['arrival_min'])
+    }
+    queue.append(new_encounter)
 
     return redirect(url_for('dashboard'))
 
